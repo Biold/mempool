@@ -60,6 +60,8 @@ export class MempoolBlocksComponent implements OnInit, OnChanges, OnDestroy {
   showMiningInfo = false;
   timeLtrSubscription: Subscription;
   timeLtr: boolean;
+  blockDisplayModeSubscription: Subscription;
+  blockDisplayMode: string;
   animateEntry: boolean = false;
 
   blockOffset: number = 155;
@@ -90,7 +92,7 @@ export class MempoolBlocksComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   enabledMiningInfoIfNeeded(url) {
-    this.showMiningInfo = url.includes('/mining') || url.includes('/acceleration');
+    this.showMiningInfo = url.includes('/mining') || url.includes('/acceleration') || this.blockDisplayMode === 'fees';
     this.cd.markForCheck(); // Need to update the view asap
   }
 
@@ -104,6 +106,10 @@ export class MempoolBlocksComponent implements OnInit, OnChanges, OnDestroy {
     if (['', 'testnet', 'signet'].includes(this.stateService.network)) {
       this.enabledMiningInfoIfNeeded(this.location.path());
       this.location.onUrlChange((url) => this.enabledMiningInfoIfNeeded(url));
+      this.blockDisplayModeSubscription = this.stateService.blockDisplayMode$.subscribe((displayMode) => {
+        this.blockDisplayMode = displayMode;
+        this.enabledMiningInfoIfNeeded(this.location.path());
+      });
     }
 
     this.timeLtrSubscription = this.stateService.timeLtr.subscribe((ltr) => {
@@ -269,6 +275,7 @@ export class MempoolBlocksComponent implements OnInit, OnChanges, OnDestroy {
     this.chainTipSubscription.unsubscribe();
     this.keySubscription.unsubscribe();
     this.isTabHiddenSubscription.unsubscribe();
+    this.blockDisplayModeSubscription?.unsubscribe();
     clearTimeout(this.resetTransitionTimeout);
   }
 

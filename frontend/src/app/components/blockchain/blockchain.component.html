@@ -11,6 +11,7 @@
       </div>
       <div id="divider" [hidden]="pageIndex > 0">
         <button class="time-toggle" (click)="toggleTimeDirection()"><fa-icon [icon]="['fas', 'exchange-alt']" [fixedWidth]="true"></fa-icon></button>
+        <button class="block-display-toggle" (click)="toggleBlockDisplayMode()"><span>{{ blockDisplayMode === 'size' ? 'MB' : 'BTC'}}</span></button>
       </div>
     </span>
   </div>

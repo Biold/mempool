@@ -57,6 +57,8 @@ export class BlockchainBlocksComponent implements OnInit, OnChanges, OnDestroy {
   showMiningInfo = false;
   timeLtrSubscription: Subscription;
   timeLtr: boolean;
+  blockDisplayModeSubscription: Subscription;
+  blockDisplayMode: string;
 
   blockOffset: number = 155;
   dividerBlockOffset: number = 205;
@@ -80,7 +82,7 @@ export class BlockchainBlocksComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   enabledMiningInfoIfNeeded(url) {
-    this.showMiningInfo = url.includes('/mining') || url.includes('/acceleration');
+    this.showMiningInfo = url.includes('/mining') || url.includes('/acceleration') || this.blockDisplayMode === 'fees';
     this.cd.markForCheck(); // Need to update the view asap
   }
 
@@ -90,6 +92,10 @@ export class BlockchainBlocksComponent implements OnInit, OnChanges, OnDestroy {
     if (['', 'testnet', 'signet'].includes(this.stateService.network)) {
       this.enabledMiningInfoIfNeeded(this.location.path());
       this.location.onUrlChange((url) => this.enabledMiningInfoIfNeeded(url));
+      this.blockDisplayModeSubscription = this.stateService.blockDisplayMode$.subscribe((displayMode) => {
+        this.blockDisplayMode = displayMode;
+        this.enabledMiningInfoIfNeeded(this.location.path());
+      });
     }
 
     this.timeLtrSubscription = this.stateService.timeLtr.subscribe((ltr) => {
@@ -202,6 +208,9 @@ export class BlockchainBlocksComponent implements OnInit, OnChanges, OnDestroy {
     this.tabHiddenSubscription.unsubscribe();
     this.markBlockSubscription.unsubscribe();
     this.timeLtrSubscription.unsubscribe();
+    if (this.blockDisplayModeSubscription) {
+      this.blockDisplayModeSubscription.unsubscribe();
+    }
     clearInterval(this.interval);
   }
 

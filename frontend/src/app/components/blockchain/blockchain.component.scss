@@ -67,6 +67,26 @@
   padding: 0;
 }
 
+.block-display-toggle {
+  color: white;
+  opacity: 0;
+  font-weight: 600;
+  font-size: 0.8rem;
+  position: absolute;
+  bottom: 15.8em;
+  left: 1px;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  transition: opacity 0.3s ease;
+  &:hover {
+    opacity: 1;
+  }
+}
+
 .blockchain-wrapper.ltr-transition .blocks-wrapper,
 .blockchain-wrapper.ltr-transition .position-container,
 .blockchain-wrapper.ltr-transition .time-toggle {
